@@ -1,0 +1,80 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: GitRepository
+metadata:
+  name: gitops
+  namespace: flux-system
+spec:
+  interval: 1m
+  url: https://github.com/lukewyman/llmworks-gitops
+  ref:
+    branch: main
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: svc-1
+  namespace: flux-system
+spec:
+  image: ghcr.io/lukewyman/llmworks/svc-1
+  interval: 1m
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: svc-1
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: svc-1
+  policy:
+    semver:
+      range: ">=0.0.0"  # or use alphabetical/newest / semver patterns
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: svc-2
+  namespace: flux-system
+spec:
+  image: ghcr.io/lukewyman/llmworks/svc-2
+  interval: 1m
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: svc-2
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: svc-2
+  policy:
+    semver:
+      range: ">=0.0.0"
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageUpdateAutomation
+metadata:
+  name: apps-auto
+  namespace: flux-system
+spec:
+  interval: 1m
+  sourceRef:
+    kind: GitRepository
+    name: gitops
+  git:
+    checkout:
+      ref:
+        branch: main
+    commit:
+      author:
+        name: flux-bot
+        email: flux-bot@users.noreply.github.com
+      messageTemplate: "chore(gitops): update images"
+    # PR-based strategy (best practice)
+    push:
+      branch: "automation/bump-{{now | date \"2006-01-02-1504\"}}"
+    strategy: PullRequest
+  update:
+    path: ./apps
+    include:
+      - "./**/*.yaml"
