@@ -1,0 +1,28 @@
+# clusters/dev/dev-infrastructure.yaml
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: dev-infrastructure
+  namespace: flux-system
+spec:
+  interval: 1m
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: gitops
+  path: ./infrastructure
+  wait: true
+  timeout: 5m
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: istio-base
+      namespace: istio-system
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: istiod
+      namespace: istio-system
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: istio-ingressgateway
+      namespace: istio-system
