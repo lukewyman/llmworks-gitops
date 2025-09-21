@@ -1,4 +1,4 @@
-apiVersion: source.toolkit.fluxcd.io/v1beta2
+apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
   name: gitops
@@ -9,7 +9,7 @@ spec:
   ref:
     branch: main
 ---
-apiVersion: image.toolkit.fluxcd.io/v1beta2
+apiVersion: image.toolkit.fluxcd.io/v1beta1   # <= was v1beta2
 kind: ImageRepository
 metadata:
   name: svc-1
@@ -18,7 +18,7 @@ spec:
   image: ghcr.io/lukewyman/llmworks/svc-1
   interval: 1m
 ---
-apiVersion: image.toolkit.fluxcd.io/v1beta2
+apiVersion: image.toolkit.fluxcd.io/v1beta1   # <= was v1beta2
 kind: ImagePolicy
 metadata:
   name: svc-1
@@ -28,9 +28,9 @@ spec:
     name: svc-1
   policy:
     semver:
-      range: ">=0.0.0"  # or use alphabetical/newest / semver patterns
+      range: ">=0.0.0"
 ---
-apiVersion: image.toolkit.fluxcd.io/v1beta2
+apiVersion: image.toolkit.fluxcd.io/v1beta1   # <= was v1beta2
 kind: ImageRepository
 metadata:
   name: svc-2
@@ -39,7 +39,7 @@ spec:
   image: ghcr.io/lukewyman/llmworks/svc-2
   interval: 1m
 ---
-apiVersion: image.toolkit.fluxcd.io/v1beta2
+apiVersion: image.toolkit.fluxcd.io/v1beta1   # <= was v1beta2
 kind: ImagePolicy
 metadata:
   name: svc-2
@@ -51,7 +51,7 @@ spec:
     semver:
       range: ">=0.0.0"
 ---
-apiVersion: image.toolkit.fluxcd.io/v1beta2
+apiVersion: image.toolkit.fluxcd.io/v1beta1   # <= MUST be v1beta1 (your CRD)
 kind: ImageUpdateAutomation
 metadata:
   name: apps-auto
@@ -69,11 +69,11 @@ spec:
       author:
         name: flux-bot
         email: flux-bot@users.noreply.github.com
-      messageTemplate: "chore(gitops): update images"
-    # PR-based strategy (best practice)
     push:
       branch: "automation/bump-{{now | date \"2006-01-02-1504\"}}"
     strategy: PullRequest
+    secretRef:
+      name: gitops-github
   update:
     path: ./apps
     include:
