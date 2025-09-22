@@ -8,11 +8,14 @@ spec:
   chart:
     spec:
       chart: gateway
-      version: ">=1.21.0 <2.0.0"
+      version: "1.27.1"
       sourceRef:
         kind: HelmRepository
         name: istio
         namespace: flux-system
   values:
+    global:
+      hub: gcr.io/istio-release
+      tag: "1.27.1"
     service:
       type: LoadBalancer
