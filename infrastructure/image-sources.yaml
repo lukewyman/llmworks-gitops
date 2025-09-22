@@ -1,0 +1,52 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: gitops
+  namespace: flux-system
+spec:
+  interval: 1m
+  url: https://github.com/lukewyman/llmworks-gitops
+  ref:
+    branch: main
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImageRepository
+metadata:
+  name: svc-1
+  namespace: flux-system
+spec:
+  image: ghcr.io/lukewyman/llmworks/svc-1
+  interval: 1m
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImagePolicy
+metadata:
+  name: svc-1
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: svc-1
+  policy:
+    semver:
+      range: ">=0.0.0"
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImageRepository
+metadata:
+  name: svc-2
+  namespace: flux-system
+spec:
+  image: ghcr.io/lukewyman/llmworks/svc-2
+  interval: 1m
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImagePolicy
+metadata:
+  name: svc-2
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: svc-2
+  policy:
+    semver:
+      range: ">=0.0.0"

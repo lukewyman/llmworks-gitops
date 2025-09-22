@@ -1,0 +1,27 @@
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImageUpdateAutomation
+metadata:
+  name: apps-auto
+  namespace: flux-system
+spec:
+  interval: 1m
+  sourceRef:
+    kind: GitRepository
+    name: gitops
+  git:
+    checkout:
+      ref:
+        branch: main
+    commit:
+      author:
+        name: flux-bot
+        email: flux-bot@users.noreply.github.com
+    push:
+      branch: "automation/bump-{{now | date \"2006-01-02-1504\"}}"
+    strategy: PullRequest
+    secretRef:
+      name: gitops-github
+  update:
+    path: ./apps
+    include:
+      - "./**/*.yaml"

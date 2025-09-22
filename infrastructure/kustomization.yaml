@@ -6,4 +6,4 @@ resources:
   - ./istio/istio-base.yaml
   - ./istio/istiod.yaml
   - ./istio/istio-ingressgateway.yaml
-  - ./image-automation.yaml
+  - ./image-sources.yaml
