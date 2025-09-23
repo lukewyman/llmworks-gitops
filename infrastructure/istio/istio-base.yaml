@@ -14,6 +14,6 @@ spec:
         name: istio
         namespace: flux-system
   values:
-  global:
-    hub: gcr.io/istio-release   # or docker.io/istio
-    tag: "1.27.1"
+    global:
+      hub: gcr.io/istio-release   # or docker.io/istio
+      tag: "1.27.1"
