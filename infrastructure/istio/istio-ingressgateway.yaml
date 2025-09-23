@@ -15,11 +15,9 @@ spec:
         namespace: flux-system
   values:
     global:
-      hub: gcr.io/istio-release                 
+      hub: gcr.io/istio-release
       tag: "1.27.1"
-    # (optional, but safe to be explicit for gateway)
-    image:
-      repository: gcr.io/istio-release/proxyv2  # matches the hub above
-      tag: "1.27.1"
+    # IMPORTANT: 'image' is a STRING for the gateway chart; default is "auto"
+    image: "gcr.io/istio-release/proxyv2:1.27.1"
     service:
-      type: LoadBalancer 
+      type: LoadBalancer
